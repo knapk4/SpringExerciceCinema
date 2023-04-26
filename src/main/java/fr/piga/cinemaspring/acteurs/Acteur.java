@@ -24,16 +24,17 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @Table(name = "acteur")
+
 public class Acteur {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
+    @Column(name = "nom", nullable = false)
     private String nom;
-
+    @Column(name = "prenom", nullable = false)
     private String prenom;
-
+    @ManyToMany(mappedBy = "acteurs")
     private List<Film> films = new ArrayList<>();
 
 }
