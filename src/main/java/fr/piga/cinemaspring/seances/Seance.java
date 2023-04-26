@@ -19,11 +19,11 @@ public class Seance {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Column(name = "date")
+    @Column(name = "date",nullable = false)
     private LocalDate date;
-    @Column(name = "placesLibres")
+    @Column(name = "placesLibres",nullable = false)
     private Integer placesLibres;
-    @Column(name = "prix")
+    @Column(name = "prix",nullable = false)
     private float prix;
 
     @ManyToOne
