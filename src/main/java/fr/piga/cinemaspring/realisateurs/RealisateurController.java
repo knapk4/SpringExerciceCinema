@@ -1,5 +1,7 @@
 package fr.piga.cinemaspring.realisateurs;
 
+import fr.piga.cinemaspring.realisateurs.dto.RealisateurCompletDto;
+import fr.piga.cinemaspring.realisateurs.dto.RealisateurSansFilmDto;
 import lombok.Getter;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,17 +18,17 @@ public class RealisateurController {
     }
 
     @GetMapping("")
-    public List<Realisateur> findAll() {
+    public List<RealisateurSansFilmDto> findAll() {
         return service.findAll();
     }
 
     @GetMapping("/{id}")
-    public Realisateur findById(@PathVariable Long id) {
+    public RealisateurCompletDto findById(@PathVariable Long id) {
         return service.findById(id);
     }
 
     @PostMapping("")
-    public Realisateur save(@RequestBody Realisateur entity) {
+    public RealisateurCompletDto save(@RequestBody Realisateur entity) {
         return service.save(entity);
     }
 

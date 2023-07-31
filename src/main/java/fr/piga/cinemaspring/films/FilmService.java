@@ -1,5 +1,10 @@
 package fr.piga.cinemaspring.films;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import fr.piga.cinemaspring.acteurs.Acteur;
+import fr.piga.cinemaspring.acteurs.ActeurService;
+import fr.piga.cinemaspring.acteurs.dto.ActeurReduitDto;
+import jakarta.persistence.EntityManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -15,9 +20,16 @@ import java.util.List;
 public class FilmService {
 
     private final FilmRepository repository;
+    private final ActeurService service;
+    private final ObjectMapper mapper;
 
-    public FilmService(FilmRepository repository) {
+
+
+
+    public FilmService(FilmRepository repository , ActeurService service, ObjectMapper mapper) {
         this.repository = repository;
+        this.service = service;
+        this.mapper = mapper;
     }
 
     /**
@@ -52,6 +64,25 @@ public class FilmService {
      */
     public void deleteById(Long id) {
         repository.deleteById(id);
+    }
+
+    public Film addActeurById(Long id, Long idActeur) {
+        Acteur acteur = new Acteur();
+        acteur.setId(idActeur);
+        return this.addActeur(id, acteur);
+    }
+
+    public Film addActeur(Long id, Acteur acteur) {
+        Film film = repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Film non trouvé"));
+        Acteur acteurSauvegarde = service.findOrInsertActeur(acteur);
+        film.getActeurs().add(acteurSauvegarde);
+        repository.save(film);
+        return findById(id);
+    }
+
+    public List<ActeurReduitDto> findActeurs(Long id) {
+        return repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Film non trouvé"))
+                .getActeurs().stream().map(acteur -> mapper.convertValue(acteur, ActeurReduitDto.class)).toList();
     }
 
 }

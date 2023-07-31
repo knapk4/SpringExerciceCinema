@@ -1,5 +1,7 @@
 package fr.piga.cinemaspring.salles;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import fr.piga.cinemaspring.salles.dto.SalleCompletDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -11,19 +13,23 @@ import java.util.List;
 public class SalleController {
 
     private final SalleService service;
+    private final ObjectMapper mapper;
 
-    public SalleController(SalleService service) {
+    public SalleController(SalleService service ,ObjectMapper mapper) {
         this.service = service;
+        this.mapper = mapper;
     }
 
     @GetMapping("")
-    public List<Salle> findAll() {
-        return service.findAll();
+    public List<SalleCompletDto> findAll() {
+        List<Salle> salles = service.findAll();
+        return salles.stream().map(salle -> mapper.convertValue(salle, SalleCompletDto.class)).toList();
     }
 
     @PostMapping("")
-    public Salle save(@RequestBody Salle entity) {
-        return service.save(entity);
+    public SalleCompletDto save(@RequestBody Salle entity) {
+        Salle nouvelleSalle = service.save(entity);
+        return mapper.convertValue(nouvelleSalle, SalleCompletDto.class);
     }
 
     @PutMapping("/{id}") // ne pas oublier de mettre l'id dans le body et dans la requete
@@ -35,8 +41,9 @@ public class SalleController {
     }
 
     @GetMapping("/{id}")
-    public Salle findById(@PathVariable Long id) {
-        return service.findById(id);
+    public SalleCompletDto findById(@PathVariable Long id) {
+        Salle salle = service.findById(id);
+        return mapper.convertValue(salle, SalleCompletDto.class);
     }
 
     @DeleteMapping("/{id}")

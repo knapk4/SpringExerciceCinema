@@ -1,0 +1,113 @@
+###
+POST http://localhost:8080/acteurs
+Content-Type: application/json
+
+{
+  "nom": "Dwayne",
+  "prenom": "Johnson",
+  "film": {
+    "titre": "Le Cinquième Elément",
+    "dateSortie": "1997-05-07",
+    "durée": "126",
+    "resume": "test"
+  }
+}
+
+###  Réponse
+POST http://localhost:8080/films
+Content-Type: application/json
+
+{
+  "titre": "Star Wars",
+  "dateSortie": "1977-05-25",
+  "durée": "121",
+  "resume": "test"
+}
+
+
+###
+POST http://localhost:8080/realisateurs
+Content-Type: application/json
+
+{
+  "nom": "George",
+  "prenom": "Lucas",
+  "film": {
+    "titre": "Star Wars",
+    "dateSortie": "1977-05-25",
+    "durée": "121",
+    "resume": "test"
+  }
+}
+
+
+
+###
+POST http://localhost:8080/films/6/realisateurs/2
+Content-Type: application/json
+
+###
+POST http://localhost:8080/personnes
+Content-Type: application/json
+
+{
+  "id": 1,
+  "nom": "Lucas",
+  "prenom": "George",
+  "age": "74"
+}
+
+
+###
+GET http://localhost:8080/personnes/1
+
+
+###
+DELETE http://localhost:8080/personnes/1
+
+23-04-25T133431.200.json
+
+###
+POST http://localhost:8080/salles
+Content-Type: application/json
+
+{
+  "numero": 1,
+  "capacite": 100
+}
+
+
+###
+POST http://localhost:8080/seances/
+Content-Type: application/json
+
+{
+  "id": 1,
+  "date": "2023-04-25 14:41:13",
+  "nombrePlace": 100,
+  "prix": 10.7,
+  "film": {
+    "id": 1,
+    "titre": "Star Wars",
+    "dateSortie": "1977-05-25",
+    "duree": 0,
+    "resume": "test",
+    "acteurs": [],
+    "realisateurs": []
+  },
+  "salle": {
+    "id": 1,
+    "numero": 1,
+    "capacite": 100
+  }
+}
+
+###
+POST http://localhost:8080/tickets
+Content-Type: application/json
+
+{
+  "nomClient": "Gaillard",
+  "nombrePlace": 1,
+  "seance": 1
+}

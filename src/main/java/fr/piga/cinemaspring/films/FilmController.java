@@ -1,5 +1,10 @@
 package fr.piga.cinemaspring.films;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import fr.piga.cinemaspring.acteurs.Acteur;
+import fr.piga.cinemaspring.acteurs.dto.ActeurReduitDto;
+import fr.piga.cinemaspring.films.dto.FilmCompletDto;
+import fr.piga.cinemaspring.films.dto.FilmReduitDto;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,9 +19,11 @@ import java.util.List;
 public class FilmController {
 
     private final FilmService service;
+    private final ObjectMapper mapper;
 
-    public FilmController(FilmService service) {
+    public FilmController(FilmService service, ObjectMapper mapper) {
         this.service = service;
+        this.mapper = mapper;
     }
 
     /**
@@ -24,8 +31,9 @@ public class FilmController {
      * @return une liste de films
      */
     @GetMapping("")
-    public List<Film> findAll() {
-        return service.findAll();
+    public List<FilmReduitDto> findAll() {
+        List<Film> films = service.findAll();
+        return films.stream().map(film -> mapper.convertValue(film, FilmReduitDto.class)).toList();
     }
 
     /**
@@ -44,8 +52,9 @@ public class FilmController {
      * @return le film correspondant à l'identifiant
      */
     @GetMapping("/{id}")
-    public Film findById(@PathVariable Long id) {
-        return service.findById(id);
+    public FilmCompletDto findById(@PathVariable Long id) {
+        Film film = service.findById(id);
+        return mapper.convertValue(film, FilmCompletDto.class);
     }
 
     /**
@@ -55,5 +64,27 @@ public class FilmController {
     @DeleteMapping("/{id}")
     public void deleteById(@PathVariable Long id) {
         service.deleteById(id);
+    }
+
+    @PutMapping("")
+    public FilmCompletDto update(@RequestBody Film film) {
+        Film entite = service.save(film);
+        return mapper.convertValue(entite, FilmCompletDto.class);
+    }
+    @PostMapping("{id}/acteurs/{idActeur}")
+    public FilmCompletDto addActeurById(@PathVariable Long id, @PathVariable Long idActeur) {
+        Film entite = service.addActeurById(id, idActeur);
+        return mapper.convertValue(entite, FilmCompletDto.class);
+    }
+
+    @PostMapping("{id}/acteurs")
+    public FilmCompletDto addActeur(@PathVariable Long id, @RequestBody Acteur acteur) {
+        Film entite = service.addActeur(id, acteur);
+        return mapper.convertValue(entite, FilmCompletDto.class);
+    }
+
+    @GetMapping("{id}/acteurs")
+    public List<ActeurReduitDto> findActeurs(@PathVariable Long id) {
+        return service.findActeurs(id);
     }
 }

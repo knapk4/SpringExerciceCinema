@@ -38,4 +38,8 @@ public class TicketService {
     public List<Ticket> findAll() {
         return repository.findAll();
     }
+
+    public List<Ticket> findBySeanceId(Long id) {
+        return repository.findBySeanceId(id);
+    }
 }

@@ -1,8 +1,10 @@
 package fr.piga.cinemaspring.realisateurs;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import fr.piga.cinemaspring.realisateurs.dto.RealisateurCompletDto;
+import fr.piga.cinemaspring.realisateurs.dto.RealisateurSansFilmDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -11,21 +13,27 @@ import java.util.List;
 public class RealisateurService {
 
     private final RealisateurRepository repository;
+    private final ObjectMapper mapper;
 
-    public RealisateurService(RealisateurRepository repository) {
+    public RealisateurService(RealisateurRepository repository, ObjectMapper mapper) {
         this.repository = repository;
+        this.mapper = mapper;
     }
 
-    public Realisateur save(Realisateur entity) {
-        return repository.save(entity);
+    public List<RealisateurSansFilmDto> findAll() {
+
+        List<Realisateur> realisateurs = repository.findAll();
+        return realisateurs.stream().map(realisateur -> mapper.convertValue(realisateur, RealisateurSansFilmDto.class)).toList();
     }
 
-    public List<Realisateur> findAll() {
-        return repository.findAll();
+    public RealisateurCompletDto save(Realisateur entity) {
+        Realisateur realisateur =  repository.save(entity);
+        return mapper.convertValue(realisateur, RealisateurCompletDto.class);
     }
 
-    public Realisateur findById(Long id) {
-        return repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    public RealisateurCompletDto findById(Long id) {
+        Realisateur realisateur =  repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        return mapper.convertValue(realisateur, RealisateurCompletDto.class);
     }
 
     public void deleteById(Long id) {
